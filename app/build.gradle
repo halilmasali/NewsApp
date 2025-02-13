@@ -49,4 +49,7 @@ dependencies {
     // For Fragment Navigation
     implementation libs.navigation.fragment.ktx
     implementation libs.navigation.ui.ktx
+
+    // For Glide Library
+    implementation libs.glide
 }

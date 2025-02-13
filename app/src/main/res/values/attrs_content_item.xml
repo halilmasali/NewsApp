@@ -1,0 +1,6 @@
+<resources>
+    <declare-styleable name="ContentItem">
+        <attr name="contentTitle" format="string" />
+        <attr name="contentImage" format="reference" />
+    </declare-styleable>
+</resources>

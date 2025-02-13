@@ -21,7 +21,7 @@ public class Item {
     public String categoryName;
 
     @SerializedName("main_image")
-    MainImage mainImage;
+    public MainImage mainImage;
 
     @SerializedName("json_url")
     public String jsonUrl;
