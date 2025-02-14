@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.halilmasali.newsapp.R;
 import com.halilmasali.newsapp.databinding.SampleContentItemBinding;
@@ -15,6 +14,7 @@ import com.halilmasali.newsapp.databinding.SampleContentItemBinding;
 public class ContentItem extends LinearLayout {
 
     SampleContentItemBinding binding;
+    private OnItemClickListener onItemClickListener;
     private String jsonUrl;
 
     public ContentItem(Context context) {
@@ -50,9 +50,8 @@ public class ContentItem extends LinearLayout {
         a.recycle();
 
         setOnClickListener(v -> {
-            // Open new activity with jsonUrl
-            if (jsonUrl != null) {
-                Toast.makeText(getContext(), jsonUrl, Toast.LENGTH_SHORT).show();
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(jsonUrl);
             }
         });
     }
@@ -67,5 +66,13 @@ public class ContentItem extends LinearLayout {
 
     public void setJsonUrl(String jsonUrl) {
         this.jsonUrl = jsonUrl;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.onItemClickListener = listener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(String jsonUrl);
     }
 }

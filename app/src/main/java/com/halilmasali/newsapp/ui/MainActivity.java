@@ -2,15 +2,22 @@ package com.halilmasali.newsapp.ui;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.halilmasali.newsapp.R;
 import com.halilmasali.newsapp.databinding.ActivityMainBinding;
 import com.halilmasali.newsapp.viewmodel.FeedDetailViewModel;
 import com.halilmasali.newsapp.viewmodel.FeedViewModel;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.topAppBar);
+        // Navigation controller
+        navigation();
 
         newsViewModel = new ViewModelProvider(this).get(FeedViewModel.class);
         newsViewModel.getNewsList().observe(this, feedModel -> {
@@ -47,5 +56,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         return Navigation.findNavController(this, R.id.nav_host_fragment).navigateUp();
+    }
+
+    private void navigation() {
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavController navController = Objects.requireNonNull(navHostFragment).getNavController();
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (destination.getId() == R.id.detailFragment) {
+                // Show back button
+                Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                binding.logoImageView.setVisibility(View.GONE);
+            } else {
+                // Hide back button
+                Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                binding.logoImageView.setVisibility(View.VISIBLE);
+            }
+        });
     }
 }
