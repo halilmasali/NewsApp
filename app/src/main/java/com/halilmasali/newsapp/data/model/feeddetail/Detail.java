@@ -30,7 +30,7 @@ public class Detail {
     public String categoryName;
 
     @SerializedName("header_image")
-    MainImage headerImage;
+    public MainImage headerImage;
 
     @SerializedName("share_url")
     public String shareUrl;

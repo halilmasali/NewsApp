@@ -7,15 +7,14 @@ import com.halilmasali.newsapp.data.model.feeddetail.FeedDetailModel;
 import com.halilmasali.newsapp.repository.FeedDetailRepository;
 
 public class FeedDetailViewModel extends ViewModel {
-    private final LiveData<FeedDetailModel> newsDetail;
+    FeedDetailRepository repository;
 
     public FeedDetailViewModel() {
-        FeedDetailRepository repository = new FeedDetailRepository();
-        newsDetail = repository.getNewsDetail();
+        repository = new FeedDetailRepository();
     }
 
-    public LiveData<FeedDetailModel> getNewsDetail() {
-        return newsDetail;
+    public LiveData<FeedDetailModel> getNewsDetail(String url) {
+        return repository.getNewsDetail(url);
     }
 
 }

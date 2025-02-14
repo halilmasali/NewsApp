@@ -1,5 +1,6 @@
 package com.halilmasali.newsapp.repository;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -23,18 +24,25 @@ public class FeedDetailRepository {
         feedDetailData = RetrofitClient.getRetrofitInstance().create(IFeedDetailData.class);
     }
 
-    public LiveData<FeedDetailModel> getNewsDetail() {
+    public LiveData<FeedDetailModel> getNewsDetail(String url) {
+        // If the URL is empty or null, use a default URL for fetching feed details
+        if (url == null || url.isEmpty()) {
+            url = "https://demo6216114.mockable.io/feed_detail";
+        }
+        // Extract the detail URL from the full URL
+        String detailUrl = url.substring(url.lastIndexOf("/") + 1);
+
         MutableLiveData<FeedDetailModel> newsDetailData = new MutableLiveData<>();
-        feedDetailData.getNewsDetail().enqueue(new Callback<FeedDetailModel>() {
+        feedDetailData.getNewsDetail(detailUrl).enqueue(new Callback<FeedDetailModel>() {
             @Override
-            public void onResponse(Call<FeedDetailModel> call, Response<FeedDetailModel> response) {
+            public void onResponse(@NonNull Call<FeedDetailModel> call, @NonNull Response<FeedDetailModel> response) {
                 if (response.isSuccessful()) {
                     newsDetailData.setValue(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<FeedDetailModel> call, Throwable t) {
+            public void onFailure(@NonNull Call<FeedDetailModel> call, @NonNull Throwable t) {
                 newsDetailData.setValue(null);
             }
         });
