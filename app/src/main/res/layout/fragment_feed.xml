@@ -34,8 +34,8 @@
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adViewCarousel"
-            android:layout_width="320dp"
-            android:layout_height="100dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:adSize="LARGE_BANNER"
             app:adUnitId="@string/admob_banner_unit_id"
             android:layout_gravity="center"

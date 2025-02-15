@@ -9,11 +9,19 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.halilmasali.newsapp.R;
 import com.halilmasali.newsapp.data.model.feeddetail.FeedDetailModel;
 import com.halilmasali.newsapp.databinding.FragmentDetailBinding;
@@ -24,12 +32,15 @@ public class DetailFragment extends Fragment {
 
     FragmentDetailBinding binding;
     FeedDetailViewModel newsDetailViewModel;
+    private InterstitialAd mInterstitialAd;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentDetailBinding.inflate(inflater, container, false);
+        addAdmobBanner();
+        loadInterstitialAd();
         loadNewsDetail();
         return binding.getRoot();
     }
@@ -38,6 +49,7 @@ public class DetailFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        showInterstitialAd();
     }
 
     private void loadNewsDetail() {
@@ -101,6 +113,24 @@ public class DetailFragment extends Fragment {
             loadImageIntoContentItem(feedDetailModel.related.items.get(i).mainImage.url, contentItem);
             setupContentItemClickListener(contentItem);
             binding.feedLinearLayout.addView(contentItem);
+
+            // Add Admob banner every 3 content items
+            if ((i + 1) % 3 == 0) {
+                // Add layout params for AdView and set margins
+                ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                layoutParams.setMargins(0, 8, 0, 8);
+                // Create AdView and add it to feedLinearLayout
+                AdView adView = new AdView(requireContext());
+                adView.setLayoutParams(layoutParams);
+                adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
+                adView.setAdUnitId(getString(R.string.admob_banner_unit_id)); // Test ad unit ID
+                AdRequest adRequest = new AdRequest.Builder().build();
+                adView.loadAd(adRequest);
+                binding.feedLinearLayout.addView(adView);
+            }
         }
     }
 
@@ -119,5 +149,53 @@ public class DetailFragment extends Fragment {
             NavController navController = NavHostFragment.findNavController(DetailFragment.this);
             navController.navigate(R.id.action_detailFragment_self, bundle);
         });
+    }
+
+    // Add Admob banner
+    private void addAdmobBanner() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        binding.adViewDetail.loadAd(adRequest);
+    }
+
+    // Load the interstitial ad
+    private void loadInterstitialAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(requireContext(), getString(R.string.admob_interstitial_unit_id), adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        mInterstitialAd = interstitialAd;
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        mInterstitialAd = null;
+                    }
+                });
+    }
+
+    // Show the interstitial ad
+    private void showInterstitialAd() {
+        NavController navController = NavHostFragment.findNavController(DetailFragment.this);
+        if (navController.getCurrentDestination() != null &&
+                navController.getCurrentDestination().getId() == R.id.feedFragment) {
+            if (mInterstitialAd != null) {
+                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        Log.d("Admob", "Interstitial Ad was dismissed.");
+                    }
+                });
+                mInterstitialAd.show(requireActivity());
+            } else {
+                navigateToFeedFragment();
+            }
+        }
+    }
+
+    // Navigate to feed fragment
+    private void navigateToFeedFragment() {
+        NavController navController = NavHostFragment.findNavController(DetailFragment.this);
+        navController.navigateUp();
     }
 }
