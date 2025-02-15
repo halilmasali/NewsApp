@@ -14,6 +14,11 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // Get the Admob Id from the gradle.properties file and set it to the resValue for security
+        resValue "string", "admob_app_id", ADMOB_APP_ID
+        resValue "string", "admob_banner_unit_id", ADMOB_BANNER_UNIT_ID
+        resValue "string", "admob_interstitial_unit_id", ADMOB_INTERSTITIAL_UNIT_ID
     }
 
     buildTypes {
@@ -52,4 +57,7 @@ dependencies {
 
     // For Glide Library
     implementation libs.glide
+
+    // For Admob Sdk
+    implementation libs.play.services.ads
 }

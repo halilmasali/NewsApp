@@ -1,6 +1,7 @@
 package com.halilmasali.newsapp.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.gms.ads.MobileAds;
 import com.halilmasali.newsapp.R;
 import com.halilmasali.newsapp.databinding.ActivityMainBinding;
 
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        initializeAdmob();
         setSupportActionBar(binding.topAppBar);
         // Navigation controller
         navigation();
@@ -53,5 +56,10 @@ public class MainActivity extends AppCompatActivity {
                 binding.logoImageView.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    // Initialize Admob for ads
+    private void initializeAdmob() {
+        MobileAds.initialize(this, initializationStatus -> Log.d("Admob", initializationStatus.toString()));
     }
 }

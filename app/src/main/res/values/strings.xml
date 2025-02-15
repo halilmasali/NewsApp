@@ -7,4 +7,7 @@
     <string name="detail_related">İlgili İçerikler</string>
     <string name="detail_share">share</string>
     <string name="share">Paylaş</string>
+    <string name="feed_features_text">Öne Çıkanlar</string>
+    <string name="carousel">Carousel</string>
+    <string name="feed_content_text">İçerikler</string>
 </resources>
