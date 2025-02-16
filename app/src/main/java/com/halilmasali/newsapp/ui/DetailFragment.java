@@ -125,22 +125,26 @@ public class DetailFragment extends Fragment {
 
             // Add Admob banner every 3 content items
             if ((i + 1) % 3 == 0) {
-                // Add layout params for AdView and set margins
-                ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-                layoutParams.setMargins(0, 8, 0, 8);
-                // Create AdView and add it to feedLinearLayout
-                AdView adView = new AdView(requireContext());
-                adView.setLayoutParams(layoutParams);
-                adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
-                adView.setAdUnitId(getString(R.string.admob_banner_unit_id)); // Test ad unit ID
-                AdRequest adRequest = new AdRequest.Builder().build();
-                adView.loadAd(adRequest);
-                binding.feedLinearLayout.addView(adView);
+                binding.feedLinearLayout.addView(createAdView());
             }
         }
+    }
+
+    private AdView createAdView() {
+        // Add layout params for AdView and set margins
+        ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.setMargins(0, 8, 0, 8);
+        // Create AdView and add it to feedLinearLayout
+        AdView adView = new AdView(requireContext());
+        adView.setLayoutParams(layoutParams);
+        adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
+        adView.setAdUnitId(getString(R.string.admob_banner_unit_id)); // Test ad unit ID
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+        return adView;
     }
 
     // Load the image into the content item

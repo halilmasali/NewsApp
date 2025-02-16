@@ -17,6 +17,9 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.material.carousel.CarouselLayoutManager;
+import com.google.android.material.carousel.CarouselSnapHelper;
+import com.google.android.material.carousel.HeroCarouselStrategy;
 import com.halilmasali.newsapp.R;
 import com.halilmasali.newsapp.data.model.feed.FeedModel;
 import com.halilmasali.newsapp.databinding.FragmentFeedBinding;
@@ -70,6 +73,12 @@ public class FeedFragment extends Fragment {
 
     // Setup carousel adapter
     private void setupCarouselAdapter(FeedModel feedModel) {
+        // Set carousel layout manager and adapter
+        CarouselLayoutManager layoutManager = new CarouselLayoutManager(new HeroCarouselStrategy());
+        binding.recyclerCarousel.setLayoutManager(layoutManager);
+        // Snap helper for swipe effect on carousel
+        new CarouselSnapHelper().attachToRecyclerView(binding.recyclerCarousel);
+
         CarouselAdapter adapter = new CarouselAdapter(getContext(), feedModel.featured);
         binding.recyclerCarousel.setAdapter(adapter);
         adapter.setOnItemClickListener(this::navigateToDetailFragment);
@@ -88,22 +97,26 @@ public class FeedFragment extends Fragment {
 
             // Add Admob banner every 3 content items
             if ((i + 1) % 3 == 0) {
-                // Add layout params for AdView and set margins
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-                layoutParams.setMargins(0, 8, 0, 8);
-                // Create AdView and add it to feedLinearLayout
-                AdView adView = new AdView(requireContext());
-                adView.setLayoutParams(layoutParams);
-                adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
-                adView.setAdUnitId(getString(R.string.admob_banner_unit_id)); // Test ad unit ID
-                AdRequest adRequest = new AdRequest.Builder().build();
-                adView.loadAd(adRequest);
-                binding.feedLinearLayout.addView(adView);
+                binding.feedLinearLayout.addView(createAdView());
             }
         }
+    }
+
+    private AdView createAdView() {
+        // Add layout params for AdView and set margins
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.setMargins(0, 8, 0, 8);
+        // Create AdView and add it to feedLinearLayout
+        AdView adView = new AdView(requireContext());
+        adView.setLayoutParams(layoutParams);
+        adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
+        adView.setAdUnitId(getString(R.string.admob_banner_unit_id)); // Test ad unit ID
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+        return adView;
     }
 
     // Load image into content item
