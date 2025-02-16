@@ -34,4 +34,4 @@ git clone https://github.com/halilmasali/NewsApp.git
 
 **Uygulamayı çalıştırın**
 
-📌 **[Uygulamayı İndir](https://github.com/halilmasali/NewsApp/releases/download/v1.0.0/News.App.apk)**
+📌 **[Uygulamayı İndir](https://github.com/halilmasali/NewsApp/releases/latest)**
