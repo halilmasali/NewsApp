@@ -1,6 +1,7 @@
 package com.halilmasali.newsapp.ui;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -83,9 +84,17 @@ public class DetailFragment extends Fragment {
                 .into(binding.detailImageView);
     }
 
-    // Load the content into the web view with the necessary styling for images
+    // Load the content into the web view with the necessary styling for images and text
     private void loadWebViewContent(String content) {
+        boolean isNightMode = (getResources().getConfiguration().uiMode &
+                               Configuration.UI_MODE_NIGHT_MASK) ==
+                               Configuration.UI_MODE_NIGHT_YES;
+
+        String backgroundColor = isNightMode ? "#000000" : "#FFFFFF";
+        String textColor = isNightMode ? "#FFFFFF" : "#000000";
+
         String htmlContent = "<html><head><style>" +
+                "body { background-color: " + backgroundColor + "; color: " + textColor + "; }" +
                 "img{max-width: 100%; width:auto; height: auto;}</style></head><body>"
                 + content
                 + "</body></html>";
