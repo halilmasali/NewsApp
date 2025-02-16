@@ -56,12 +56,14 @@ public class DetailFragment extends Fragment {
     private void loadNewsDetail() {
         // Get the detail url from the arguments
         if (getArguments() != null) {
+            setShimmerVisibility(true);
             String detailUrl = getArguments().getString("detail_url");
             // Get the news detail from the view model
             newsDetailViewModel = new ViewModelProvider(this).get(FeedDetailViewModel.class);
             newsDetailViewModel.getNewsDetail(detailUrl).observe(getViewLifecycleOwner(), feedDetailModel -> {
                 if (feedDetailModel != null) {
                     updateUI(feedDetailModel, detailUrl);
+                    setShimmerVisibility(false);
                 }
             });
         }
@@ -210,5 +212,26 @@ public class DetailFragment extends Fragment {
     private void navigateToFeedFragment() {
         NavController navController = NavHostFragment.findNavController(DetailFragment.this);
         navController.navigateUp();
+    }
+
+    // Set shimmer visibility for loading effect
+    private void setShimmerVisibility(boolean visible) {
+        if (visible) {
+            binding.shimmerDetailLayout.startShimmer();
+            binding.shimmerDetailLayout.setVisibility(View.VISIBLE);
+            // Set all other views to INVISIBLE
+            for (int i = 0; i < binding.feedLinearLayout.getChildCount(); i++) {
+                View child = binding.feedLinearLayout.getChildAt(i);
+                child.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            binding.shimmerDetailLayout.stopShimmer();
+            binding.shimmerDetailLayout.setVisibility(View.GONE);
+            // Set all other views to VISIBLE
+            for (int i = 0; i < binding.feedLinearLayout.getChildCount(); i++) {
+                View child = binding.feedLinearLayout.getChildAt(i);
+                child.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }

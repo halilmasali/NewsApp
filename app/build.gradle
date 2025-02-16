@@ -60,4 +60,8 @@ dependencies {
 
     // For Admob Sdk
     implementation libs.play.services.ads
+
+    // For Shimmer Effect
+    implementation libs.shimmer
+
 }

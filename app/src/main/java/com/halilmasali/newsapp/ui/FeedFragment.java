@@ -63,10 +63,12 @@ public class FeedFragment extends Fragment {
 
     // Observe news list
     private void observeNewsList() {
+        setShimmerVisibility(true);
         newsViewModel.getNewsList().observe(getViewLifecycleOwner(), feedModel -> {
             if (feedModel != null) {
                 setupCarouselAdapter(feedModel);
                 addContentItems(feedModel);
+                setShimmerVisibility(false);
             }
         });
     }
@@ -124,5 +126,26 @@ public class FeedFragment extends Fragment {
         Glide.with(requireContext())
                 .load(imageUrl)
                 .into(contentItem.binding.contentImage);
+    }
+
+    // Set shimmer visibility for loading effect
+    private void setShimmerVisibility(boolean visible) {
+        if (visible) {
+            binding.shimmerFeedLayout.startShimmer();
+            binding.shimmerFeedLayout.setVisibility(View.VISIBLE);
+            // Set all other views to INVISIBLE
+            for (int i = 0; i < binding.feedLinearLayout.getChildCount(); i++) {
+                View child = binding.feedLinearLayout.getChildAt(i);
+                child.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            binding.shimmerFeedLayout.stopShimmer();
+            binding.shimmerFeedLayout.setVisibility(View.GONE);
+            // Set all other views to VISIBLE
+            for (int i = 0; i < binding.feedLinearLayout.getChildCount(); i++) {
+                View child = binding.feedLinearLayout.getChildAt(i);
+                child.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }
