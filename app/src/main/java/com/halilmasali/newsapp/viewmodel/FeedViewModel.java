@@ -4,19 +4,17 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.halilmasali.newsapp.data.model.feed.FeedModel;
+import com.halilmasali.newsapp.data.network.Resource;
 import com.halilmasali.newsapp.repository.FeedRepository;
 
-import java.util.List;
-
 public class FeedViewModel extends ViewModel {
-    private final LiveData<FeedModel> newsList;
+    FeedRepository repository;
 
     public FeedViewModel() {
-        FeedRepository repository = new FeedRepository();
-        newsList = repository.getNews();
+        repository = new FeedRepository();
     }
 
-    public LiveData<FeedModel> getNewsList() {
-        return newsList;
+    public LiveData<Resource<FeedModel>> getNewsList() {
+        return repository.getNews();
     }
 }

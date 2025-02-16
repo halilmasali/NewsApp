@@ -25,6 +25,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.halilmasali.newsapp.R;
 import com.halilmasali.newsapp.data.model.feeddetail.FeedDetailModel;
+import com.halilmasali.newsapp.data.network.Resource;
 import com.halilmasali.newsapp.databinding.FragmentDetailBinding;
 import com.halilmasali.newsapp.viewmodel.FeedDetailViewModel;
 
@@ -56,25 +57,30 @@ public class DetailFragment extends Fragment {
     private void loadNewsDetail() {
         // Get the detail url from the arguments
         if (getArguments() != null) {
-            setShimmerVisibility(true);
             String detailUrl = getArguments().getString("detail_url");
             // Get the news detail from the view model
             newsDetailViewModel = new ViewModelProvider(this).get(FeedDetailViewModel.class);
-            newsDetailViewModel.getNewsDetail(detailUrl).observe(getViewLifecycleOwner(), feedDetailModel -> {
-                if (feedDetailModel != null) {
-                    updateUI(feedDetailModel, detailUrl);
+            newsDetailViewModel.getNewsDetail(detailUrl).observe(getViewLifecycleOwner(), resource -> {
+                if (resource.status == Resource.Status.LOADING) {
+                    setShimmerVisibility(true);
+                } else if (resource.status == Resource.Status.SUCCESS) {
                     setShimmerVisibility(false);
+                    updateUI(resource.data);
+                } else if (resource.status == Resource.Status.ERROR) {
+                    setShimmerVisibility(false);
+                    Log.e("DetailFragment", "Error loading news detail: " + resource.message);
+                    setErrorMessage(resource.message);
                 }
             });
         }
     }
 
     // Update the UI with the feed detail model
-    private void updateUI(FeedDetailModel feedDetailModel, String detailUrl) {
+    private void updateUI(FeedDetailModel feedDetailModel) {
         loadImage(feedDetailModel.detail.headerImage.url);
         binding.titleTextView.setText(feedDetailModel.detail.title);
         loadWebViewContent(feedDetailModel.detail.content);
-        setupShareButton(feedDetailModel.detail.title, detailUrl);
+        setupShareButton(feedDetailModel.detail.title, feedDetailModel.detail.shareUrl);
         addRelatedContent(feedDetailModel);
     }
 
@@ -89,8 +95,8 @@ public class DetailFragment extends Fragment {
     // Load the content into the web view with the necessary styling for images and text
     private void loadWebViewContent(String content) {
         boolean isNightMode = (getResources().getConfiguration().uiMode &
-                               Configuration.UI_MODE_NIGHT_MASK) ==
-                               Configuration.UI_MODE_NIGHT_YES;
+                Configuration.UI_MODE_NIGHT_MASK) ==
+                Configuration.UI_MODE_NIGHT_YES;
 
         String backgroundColor = isNightMode ? "#000000" : "#FFFFFF";
         String textColor = isNightMode ? "#FFFFFF" : "#000000";
@@ -233,5 +239,15 @@ public class DetailFragment extends Fragment {
                 child.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    // Set error message for error loading news detail
+    private void setErrorMessage(String errorMessage) {
+        binding.errorMessage.setText(errorMessage);
+        binding.errorLayout.setVisibility(View.VISIBLE);
+        binding.retryButton.setOnClickListener(v -> {
+            loadNewsDetail();
+            binding.errorLayout.setVisibility(View.GONE);
+        });
     }
 }

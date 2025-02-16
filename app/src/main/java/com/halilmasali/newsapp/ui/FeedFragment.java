@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.google.android.material.carousel.CarouselSnapHelper;
 import com.google.android.material.carousel.HeroCarouselStrategy;
 import com.halilmasali.newsapp.R;
 import com.halilmasali.newsapp.data.model.feed.FeedModel;
+import com.halilmasali.newsapp.data.network.Resource;
 import com.halilmasali.newsapp.databinding.FragmentFeedBinding;
 import com.halilmasali.newsapp.viewmodel.FeedViewModel;
 
@@ -63,12 +65,17 @@ public class FeedFragment extends Fragment {
 
     // Observe news list
     private void observeNewsList() {
-        setShimmerVisibility(true);
-        newsViewModel.getNewsList().observe(getViewLifecycleOwner(), feedModel -> {
-            if (feedModel != null) {
-                setupCarouselAdapter(feedModel);
-                addContentItems(feedModel);
+        newsViewModel.getNewsList().observe(getViewLifecycleOwner(), resource -> {
+            if (resource.status == Resource.Status.LOADING) {
+                setShimmerVisibility(true);
+            } else if (resource.status == Resource.Status.ERROR) {
                 setShimmerVisibility(false);
+                Log.e("FeedFragment", "Error: " + resource.message);
+                setErrorMessage(resource.message);
+            } else if (resource.status == Resource.Status.SUCCESS) {
+                setShimmerVisibility(false);
+                setupCarouselAdapter(resource.data);
+                addContentItems(resource.data);
             }
         });
     }
@@ -147,5 +154,14 @@ public class FeedFragment extends Fragment {
                 child.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    private void setErrorMessage(String errorMessage) {
+        binding.errorMessage.setText(errorMessage);
+        binding.errorLayout.setVisibility(View.VISIBLE);
+        binding.retryButton.setOnClickListener(v -> {
+            observeNewsList();
+            binding.errorLayout.setVisibility(View.GONE);
+        });
     }
 }

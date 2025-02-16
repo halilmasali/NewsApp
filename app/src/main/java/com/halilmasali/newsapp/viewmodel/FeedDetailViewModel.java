@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.halilmasali.newsapp.data.model.feeddetail.FeedDetailModel;
+import com.halilmasali.newsapp.data.network.Resource;
 import com.halilmasali.newsapp.repository.FeedDetailRepository;
 
 public class FeedDetailViewModel extends ViewModel {
@@ -13,7 +14,7 @@ public class FeedDetailViewModel extends ViewModel {
         repository = new FeedDetailRepository();
     }
 
-    public LiveData<FeedDetailModel> getNewsDetail(String url) {
+    public LiveData<Resource<FeedDetailModel>> getNewsDetail(String url) {
         return repository.getNewsDetail(url);
     }
 
