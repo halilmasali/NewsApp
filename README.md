@@ -1,37 +1,38 @@
-# NewsApp
-## Kullanılan Teknolojiler ve Kütüphaneler
+# NewsApp – Study Case
 
-| Teknoloji | Açıklama |
-|-----------|---------|
-| **Java** | Uygulamanın ana programlama dili |
-| **Android Navigation Component** | Fragment yönetimi |
-| **ViewModel & LiveData** | MVVM mimarisi için veri yönetimi |
-| **Retrofit** | API’den veri çekme ve HTTP istekleri |
-| **Glide** | Hızlı görsel yükleme ve önbellekleme |
-| **Gson** | JSON verilerini parse etme |
-| **Facebook Shimmer** | Yükleme ekranı için animasyonlu efekt |
-| **AdMob (Google Mobile Ads SDK)** | Reklam gösterimi (Banner & Interstitial) |
+## Technologies & Libraries Used
+
+| Technology | Description |
+|------------|-------------|
+| **Java** | Main programming language of the application |
+| **Android Navigation Component** | Fragment management |
+| **ViewModel & LiveData** | Data management for MVVM architecture |
+| **Retrofit** | Fetching data from API and handling HTTP requests |
+| **Glide** | Fast image loading and caching |
+| **Gson** | Parsing JSON data |
+| **Facebook Shimmer** | Animated effect for loading screens |
+| **AdMob (Google Mobile Ads SDK)** | Advertisement display (Banner & Interstitial) |
 
 ---
 
-## Gereksinimler
+## Requirements
 
 - **Android Studio Ladybug Feature Drop | 2024.2.2 Patch 1**  
-- **Java (JDK 11 veya üstü)**  
+- **Java (JDK 11 or higher)**  
 - **Gradle 8.x**  
 - **Minimum Android SDK 24 (Android 7.0, Nougat)**  
 
 ---
 
-## Kurulum & Çalıştırma
+## Setup & Run
 
-**Projeyi klonlayın:**  
+**Clone the repository:**  
 ```sh
 git clone https://github.com/halilmasali/NewsApp.git
 ```
 
-**Android Studio'da açın** ve gerekli bağımlılıkları indirmek için Gradle’ı senkronize edin.
+**Open it in Android Studio** and sync Gradle to download the required dependencies.
 
-**Uygulamayı çalıştırın**
+**Run the application.**
 
-📌 **[Uygulamayı İndir](https://github.com/halilmasali/NewsApp/releases/latest)**
+📌 **[Download the Latest Release](https://github.com/halilmasali/NewsApp/releases/latest)**
